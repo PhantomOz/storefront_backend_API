@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =
-  process.env;
+  process.env; //Get environment variables for POSTGRES Database
 
 const client = new Pool({
   host: POSTGRES_HOST,
