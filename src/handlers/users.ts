@@ -1,5 +1,6 @@
 import { Request, Response, Application } from "express";
 import { User, UserStore } from "../models/user";
+import isAuthorized from "../middleware/authorization";
 
 const store = new UserStore();
 
@@ -38,7 +39,7 @@ const authenticate = async (req: Request, res: Response) => {
 const user_routes = (app: Application) => {
   app.get("/users", index);
   app.post("/users", create);
-  app.get("/users/:id", show);
+  app.get("/users/:id", isAuthorized, show);
   app.post("/users/login", authenticate);
 };
 
