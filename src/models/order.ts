@@ -9,7 +9,7 @@ export type Order = {
 };
 
 export class OrderStore {
-  async activeOrder(user_id: number): Promise<Order> {
+  async currentOrder(user_id: number): Promise<Order> {
     try {
       //ts-ignore
       const conn = await client.connect();
