@@ -43,7 +43,7 @@ export class UserStore {
       //ts-ignore
       const conn = await client.connect();
       const sql =
-        "INSERT INTO users (firstname, lastname, password) VALUES ($1, $2, $3)";
+        "INSERT INTO users (firstname, lastname, password) VALUES ($1, $2, $3) RETURNING *";
       const hash = bcrypt.hashSync(
         user.password + BCRYPT_PASSWORD,
         Number(SALTROUND)
@@ -53,6 +53,7 @@ export class UserStore {
         user.lastname,
         hash,
       ]);
+      console.log(result);
       const newUser = result.rows[0];
       conn.release();
       return newUser;
@@ -62,10 +63,10 @@ export class UserStore {
   } // Create new Users
 
   async authenticate(user: User): Promise<string> {
-    const { BCRYPT_PASSWORD, SALTROUND } = process.env;
+    const { BCRYPT_PASSWORD } = process.env;
 
     const conn = await client.connect();
-    const sql = "SELECT * FROM users WHERE fisrtname=($1) AND lastname=($2)";
+    const sql = "SELECT * FROM users WHERE firstname=($1) AND lastname=($2)";
 
     const result = await conn.query(sql, [user.firstname, user.lastname]);
 
@@ -78,6 +79,7 @@ export class UserStore {
       }
     }
 
-    return "Invalid credentials";
+    conn.release();
+    throw new Error("Invalid credentials");
   } // Authentication of user credentials
 }
