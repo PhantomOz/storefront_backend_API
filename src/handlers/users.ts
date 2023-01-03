@@ -1,5 +1,5 @@
 import { Request, Response, Application } from "express";
-import { User, UserStore } from "../models/user";
+import { UserStore } from "../models/user";
 import isAuthorized from "../middleware/authorization";
 
 const store = new UserStore();

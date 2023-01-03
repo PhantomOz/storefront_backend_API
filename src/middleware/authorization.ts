@@ -12,16 +12,17 @@ declare global {
 
 //Check if the user is logged In
 const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
-  const authorizationHeader = req.headers.authorization;
-  const token = authorizationHeader?.split(" ")[1];
-  const user = jwt.verify(String(token), String(process.env.JWTSECRET));
+  try {
+    const authorizationHeader = req.headers.authorization;
+    const token = authorizationHeader?.split(" ")[1];
+    const user = jwt.verify(String(token), String(process.env.JWTSECRET));
 
-  req.user = JSON.stringify(user);
-  if (!token || !user) {
-    return res.status(401).json({ error: "Access Denied, Invalid token" });
+    req.user = JSON.stringify(user);
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Access Denied, Invalid token" });
   }
-
-  next();
 };
 
 export default isAuthorized;
