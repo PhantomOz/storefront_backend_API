@@ -40,3 +40,5 @@ const order_routes = (app: Application) => {
   app.get("/order/completed", isAuthorized, completedOrders);
   app.post("/order", isAuthorized, create);
 };
+
+export default order_routes;
