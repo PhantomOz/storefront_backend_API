@@ -53,7 +53,7 @@ export class UserStore {
         user.lastname,
         hash,
       ]);
-      console.log(result);
+      // console.log(result);
       const newUser = result.rows[0];
       conn.release();
       return newUser;
