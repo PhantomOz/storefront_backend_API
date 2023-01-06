@@ -1,7 +1,8 @@
 import { ProductStore } from "../../models/product";
 
+const store = new ProductStore();
+
 describe("Check if the Method of the Product model are available", () => {
-  const store = new ProductStore();
   it("should return true if index is defined", () => {
     expect(store.index).toBeDefined();
   });
@@ -19,7 +20,6 @@ describe("Check if the Method of the Product model are available", () => {
   });
 });
 describe("Testing Product Methods", () => {
-  const store = new ProductStore();
   it("should return Empty array", async () => {
     const products = await store.index();
     expect(products).toEqual([]);

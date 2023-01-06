@@ -13,7 +13,7 @@ export class OrderStore {
     try {
       //ts-ignore
       const conn = await client.connect();
-      const sql = "SELECT * FROM orders WHERE user_id = $1 DESC";
+      const sql = "SELECT * FROM orders WHERE user_id = $1 ORDER BY id DESC";
       const result = await conn.query(sql, [user_id]);
       conn.release();
       return result.rows[0];
@@ -27,7 +27,7 @@ export class OrderStore {
       //ts-ignore
       const conn = await client.connect();
       const sql =
-        "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed' DESC";
+        "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed' ORDER BY id DESC";
       const result = await conn.query(sql, [user_id]);
       conn.release();
       return result.rows;
