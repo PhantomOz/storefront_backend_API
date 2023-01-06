@@ -97,3 +97,68 @@ describe("Testing the API endpoint for Product Handler", () => {
     ]);
   });
 });
+describe("Testing the endpoint for Order Handler", () => {
+  it("/POST Should create a completed Order", async () => {
+    const response = await request
+      .post("/order")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        product_id: 2,
+        quantity: 10,
+        status: "completed",
+      });
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({
+      id: 2,
+      user_id: 2,
+      product_id: 2,
+      quantity: 10,
+      status: "completed",
+    });
+  });
+  it("/POST Should create an active Order", async () => {
+    const response = await request
+      .post("/order")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        product_id: 2,
+        quantity: 5,
+      });
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({
+      id: 3,
+      user_id: 2,
+      product_id: 2,
+      quantity: 5,
+      status: "active",
+    });
+  });
+  it("/GET Should return Users current order", async () => {
+    const response = await request
+      .get("/order/current")
+      .set("Authorization", "Bearer " + token);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      id: 3,
+      user_id: 2,
+      product_id: 2,
+      quantity: 5,
+      status: "active",
+    });
+  });
+  it("/GET Should return Users completed orders", async () => {
+    const response = await request
+      .get("/order/completed")
+      .set("Authorization", "Bearer " + token);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      {
+        id: 2,
+        user_id: 2,
+        product_id: 2,
+        quantity: 10,
+        status: "completed",
+      },
+    ]);
+  });
+});

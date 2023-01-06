@@ -27,7 +27,8 @@ const create = async (req: Request, res: Response) => {
     const order = await store.create(
       Number(JSON.parse(req.user).id),
       req.body.product_id,
-      req.body.quantity
+      req.body.quantity,
+      req.body.status
     );
     res.status(201).json(order);
   } catch ({ message }) {

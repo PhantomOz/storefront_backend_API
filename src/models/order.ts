@@ -39,14 +39,20 @@ export class OrderStore {
   async create(
     user_id: number,
     product_id: number,
-    quantity: number
+    quantity: number,
+    status: string = "active"
   ): Promise<Order> {
     try {
       //ts-ignore
       const conn = await client.connect();
       const sql =
-        "INSERT INTO orders (user_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *";
-      const result = await conn.query(sql, [user_id, product_id, quantity]);
+        "INSERT INTO orders (user_id, product_id, quantity, status) VALUES ($1, $2, $3, $4) RETURNING *";
+      const result = await conn.query(sql, [
+        user_id,
+        product_id,
+        quantity,
+        status,
+      ]);
       conn.release();
       return result.rows[0];
     } catch ({ message }) {
