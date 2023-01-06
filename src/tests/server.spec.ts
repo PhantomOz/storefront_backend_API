@@ -47,3 +47,53 @@ describe("Testing endpoint response for Users", () => {
     });
   });
 });
+describe("Testing the API endpoint for Product Handler", () => {
+  it("/GET Should return All Products", async () => {
+    const response = await request.get("/products");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([...response.body]);
+  });
+  it("/GET Should return a Product by id", async () => {
+    const response = await request.get("/products/1");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      id: 1,
+      name: "skirt",
+      price: 20,
+      category: "clothing",
+    });
+  });
+  it("/POST Should return a newly created Product", async () => {
+    const response = await request
+      .post("/products")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        name: "Trousers",
+        price: 20,
+      });
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({
+      id: 2,
+      name: "Trousers",
+      price: 20,
+      category: null,
+    });
+  });
+  it("/GET Should return the topFive Product", async () => {
+    const response = await request.get("/products/topfive");
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBeLessThanOrEqual(5);
+  });
+  it("/GET Should return Products in a category", async () => {
+    const response = await request.get("/products/category/clothing");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      {
+        id: 1,
+        name: "skirt",
+        price: 20,
+        category: "clothing",
+      },
+    ]);
+  });
+});

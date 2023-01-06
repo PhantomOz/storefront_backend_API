@@ -44,8 +44,8 @@ const getCategory = async (req: Request, res: Response) => {
 const product_routes = (app: Application) => {
   app.get("/products", index);
   app.post("/products", isAuthorized, create);
-  app.get("/products/:id", show);
   app.get("/products/topfive", topFive);
+  app.get("/products/:id", show);
   app.get("/products/category/:category", getCategory);
 };
 
