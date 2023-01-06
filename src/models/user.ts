@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 export type User = {
-  id: number;
+  id?: number;
   firstname: string;
   lastname: string;
   password: string;
