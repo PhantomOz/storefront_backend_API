@@ -26,17 +26,35 @@ These are the notes from a meeting with the frontend developer that describe wha
 - name
 - price
 - [OPTIONAL] category
+- SCHEMA - (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price INTEGER NOT NULL,
+    category VARCHAR(255)
+)
 
 #### User
 - id
 - firstName
 - lastName
 - password
-
+- SCHEMA - (
+    id SERIAL PRIMARY KEY,
+    firstname VARCHAR(256) NOT NULL,
+    lastname VARCHAR(256) NOT NULL,
+    password TEXT NOT NULL
+)
 #### Orders
 - id
 - id of each product in the order
 - quantity of each product in the order
 - user_id
 - status of order (active or complete)
+- SCHEMA - (
+    id SERIAL PRIMARY KEY,
+    product_Id INTEGER REFERENCES products(id),
+    quantity INTEGER NOT NULL,
+    user_id INTEGER REFERENCES users(id),
+    status VARCHAR(255) DEFAULT 'active'
+)
 
