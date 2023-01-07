@@ -44,6 +44,9 @@ describe("Testing endpoint response for Users", () => {
       firstname: "John",
       lastname: "doe",
       password: response.body.password,
+      purchase: [
+        { id: 1, product_id: 1, quantity: 20, user_id: 1, status: "active" },
+      ],
     });
   });
 });
