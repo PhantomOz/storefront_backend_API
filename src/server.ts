@@ -7,6 +7,7 @@ import dashboardRoutes from "./handlers/dashboards";
 
 const app: express.Application = express();
 const address: string = "0.0.0.0:3000";
+const port = process.env.SERVER_PORT;
 
 app.use(bodyParser.json());
 
@@ -20,7 +21,7 @@ product_routes(app);
 order_routes(app);
 dashboardRoutes(app);
 
-app.listen(3000, function () {
+app.listen(port, function () {
   console.log(`starting app on: ${address}`);
 });
 
