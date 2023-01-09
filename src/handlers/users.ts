@@ -41,7 +41,7 @@ const authenticate = async (req: Request, res: Response) => {
 };
 
 const user_routes = (app: Application) => {
-  app.get("/users", index);
+  app.get("/users", isAuthorized, index);
   app.post("/users", create);
   app.get("/users/:id", isAuthorized, show);
   app.post("/users/login", authenticate);
