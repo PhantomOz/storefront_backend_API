@@ -19,6 +19,10 @@ These are the notes from a meeting with the frontend developer that describe wha
 #### Orders
 - Current Order by user (args: user id)[token required] - (/order/current)
 - [OPTIONAL] Completed Orders by user (args: user id)[token required] - (/order/completed)
+- Add products to order by user(args: quantity, product id, order id, user id)[token required] - (/order/:id/products)
+
+#### DashboardQueries
+- Get All Products in Orders - (/products_in_orders)
 
 ## Data Shapes
 #### Product
@@ -58,3 +62,14 @@ These are the notes from a meeting with the frontend developer that describe wha
     status VARCHAR(255) DEFAULT 'active'
 )
 
+#### Order_Products
+- id
+- quantity
+- product_id
+- order_id
+- SCHEMA - (
+    id SERIAL PRIMARY KEY,
+    quantity INTEGER,
+    order_id INTEGER REFERENCES orders (id),
+    product_id INTEGER REFERENCES products(id)
+)
