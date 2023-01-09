@@ -5,8 +5,12 @@ import isAuthorized from "../middleware/authorization";
 const store = new UserStore();
 
 const index = async (req: Request, res: Response) => {
-  const users = await store.index();
-  res.status(200).json(users);
+  try {
+    const users = await store.index();
+    res.status(200).json(users);
+  } catch ({ message }) {
+    res.status(404).json(message);
+  }
 };
 
 const show = async (req: Request, res: Response) => {

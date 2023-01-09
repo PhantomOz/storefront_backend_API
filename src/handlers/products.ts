@@ -5,8 +5,12 @@ import isAuthorized from "../middleware/authorization";
 const store = new ProductStore();
 
 const index = async (req: Request, res: Response) => {
-  const products = await store.index();
-  res.status(200).json(products);
+  try {
+    const products = await store.index();
+    res.status(200).json(products);
+  } catch ({ message }) {
+    res.status(404).json(message);
+  }
 };
 
 const show = async (req: Request, res: Response) => {
@@ -28,8 +32,12 @@ const create = async (req: Request, res: Response) => {
 };
 
 const topFive = async (req: Request, res: Response) => {
-  const products = await store.topFive();
-  res.status(200).json(products);
+  try {
+    const products = await store.topFive();
+    res.status(200).json(products);
+  } catch ({ message }) {
+    res.status(404).json(message);
+  }
 };
 
 const getCategory = async (req: Request, res: Response) => {
