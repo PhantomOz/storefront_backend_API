@@ -2,10 +2,15 @@ import client from "../utils/database";
 
 export type Order = {
   id?: number;
-  product_id: number;
-  quantity: number;
   user_id: number;
   status: string;
+};
+
+export type OrderItem = {
+  id?: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
 };
 
 export class OrderStore {
@@ -13,8 +18,7 @@ export class OrderStore {
     try {
       //ts-ignore
       const conn = await client.connect();
-      const sql =
-        "SELECT * FROM orders WHERE user_id = $1 INNER JOIN order_products ON orders.id = order_products.order_id ORDER BY id DESC";
+      const sql = "SELECT * FROM orders WHERE user_id = $1 ORDER BY id DESC";
       const result = await conn.query(sql, [user_id]);
       conn.release();
       return result.rows[0];
@@ -28,7 +32,7 @@ export class OrderStore {
       //ts-ignore
       const conn = await client.connect();
       const sql =
-        "SELECT * FROM orders WHERE user_id = $1 AND status = 'completed' INNER JOIN order_products ON orders.id = order_products.order_id ORDER BY id DESC";
+        "SELECT * FROM orders WHERE user_id = $1 AND status = 'complete' ORDER BY id DESC";
       const result = await conn.query(sql, [user_id]);
       conn.release();
       return result.rows;
@@ -37,23 +41,13 @@ export class OrderStore {
     }
   } // Getting users completed orders
 
-  async create(
-    user_id: number,
-    product_id: number,
-    quantity: number,
-    status: string = "active"
-  ): Promise<Order> {
+  async create(user_id: number, status: string = "active"): Promise<Order> {
     try {
       //ts-ignore
       const conn = await client.connect();
       const sql =
-        "INSERT INTO orders (user_id, product_id, quantity, status) VALUES ($1, $2, $3, $4) RETURNING *";
-      const result = await conn.query(sql, [
-        user_id,
-        product_id,
-        quantity,
-        status,
-      ]);
+        "INSERT INTO orders (user_id, status) VALUES ($1, $2) RETURNING *";
+      const result = await conn.query(sql, [user_id, status]);
       conn.release();
       return result.rows[0];
     } catch ({ message }) {
@@ -63,20 +57,20 @@ export class OrderStore {
 
   async addProduct(
     quantity: number,
-    orderId: string,
-    productId: string,
+    orderId: number,
+    productId: number,
     user_id: number
-  ): Promise<Order> {
+  ): Promise<OrderItem> {
     try {
       const pSql = "SELECT * FROM orders WHERE id = $1 AND user_id = $2";
       const sql =
         "INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *";
       //@ts-ignore
-      const conn = await Client.connect();
+      const conn = await client.connect();
 
       const d_order = await conn.query(pSql, [orderId, user_id]);
 
-      if (d_order.rows.length > 0) {
+      if (d_order.rows.length > 0 && d_order.rows[0].status === "active") {
         const result = await conn.query(sql, [quantity, orderId, productId]);
 
         const order = result.rows[0];

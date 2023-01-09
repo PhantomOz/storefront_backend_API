@@ -44,9 +44,7 @@ describe("Testing endpoint response for Users", () => {
       firstname: "John",
       lastname: "doe",
       password: response.body.password,
-      purchase: [
-        { id: 1, product_id: 1, quantity: 20, user_id: 1, status: "active" },
-      ],
+      purchase: [{ id: 1, user_id: 1, status: "active" }],
     });
   });
 });
@@ -106,34 +104,41 @@ describe("Testing the endpoint for Order Handler", () => {
       .post("/order")
       .set("Authorization", "Bearer " + token)
       .send({
-        product_id: 2,
-        quantity: 10,
-        status: "completed",
+        status: "complete",
       });
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
       id: 2,
       user_id: 2,
-      product_id: 2,
-      quantity: 10,
-      status: "completed",
+      status: "complete",
     });
   });
   it("/POST Should create an active Order", async () => {
     const response = await request
       .post("/order")
-      .set("Authorization", "Bearer " + token)
-      .send({
-        product_id: 2,
-        quantity: 5,
-      });
+      .set("Authorization", "Bearer " + token);
+
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
       id: 3,
       user_id: 2,
-      product_id: 2,
-      quantity: 5,
       status: "active",
+    });
+  });
+  it("/POST add product to active order", async () => {
+    const response = await request
+      .post("/order/3/products")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        productId: 2,
+        quantity: 5,
+      });
+    expect(response.status).toBe(201);
+    expect(response.body).toEqual({
+      id: 2,
+      quantity: 5,
+      order_id: 3,
+      product_id: 2,
     });
   });
   it("/GET Should return Users current order", async () => {
@@ -144,8 +149,6 @@ describe("Testing the endpoint for Order Handler", () => {
     expect(response.body).toEqual({
       id: 3,
       user_id: 2,
-      product_id: 2,
-      quantity: 5,
       status: "active",
     });
   });
@@ -158,9 +161,36 @@ describe("Testing the endpoint for Order Handler", () => {
       {
         id: 2,
         user_id: 2,
+        status: "complete",
+      },
+    ]);
+  });
+});
+
+describe("Testing Dashboard Endpoints", () => {
+  it("/GET should return products in orders", async () => {
+    const response = await request
+      .get("/products_in_orders")
+      .set("Authorization", "Bearer " + token);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      {
+        id: 1,
+        name: "skirt",
+        price: 20,
+        category: "clothing",
+        quantity: 20,
+        order_id: 1,
+        product_id: 1,
+      },
+      {
+        id: 2,
+        name: "Trousers",
+        price: 20,
+        category: null,
+        quantity: 5,
+        order_id: 3,
         product_id: 2,
-        quantity: 10,
-        status: "completed",
       },
     ]);
   });

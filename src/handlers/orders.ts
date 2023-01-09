@@ -26,8 +26,6 @@ const create = async (req: Request, res: Response) => {
   try {
     const order = await store.create(
       Number(JSON.parse(req.user).id),
-      req.body.product_id,
-      req.body.quantity,
       req.body.status
     );
     res.status(201).json(order);
@@ -36,8 +34,8 @@ const create = async (req: Request, res: Response) => {
   }
 };
 const addProduct = async (req: Request, res: Response) => {
-  const orderId = req.params.id;
-  const productId = req.body.productId;
+  const orderId = Number(req.params.id);
+  const productId = Number(req.body.productId);
   const quantity = Number(req.body.quantity);
   const user_id = Number(JSON.parse(req.user).id);
 
@@ -48,10 +46,9 @@ const addProduct = async (req: Request, res: Response) => {
       productId,
       user_id
     );
-    res.json(addedProduct);
+    res.status(201).json(addedProduct);
   } catch ({ message }) {
-    res.status(400);
-    res.json(message);
+    res.status(400).json(message);
   }
 };
 
